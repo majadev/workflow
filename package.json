@@ -1,0 +1,25 @@
+{
+  "name": "workflow",
+  "version": "1.0.0",
+  "description": "Web workflow with npm, SASS, Gulp and more",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majadev/workflow.git"
+  },
+  "keywords": [
+    "SASS",
+    "NPM",
+    "Git",
+    "Gulp"
+  ],
+  "author": "Maja Gedda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/majadev/workflow/issues"
+  },
+  "homepage": "https://github.com/majadev/workflow#readme"
+}
