@@ -1,3 +1,1 @@
-var hej = function(){
-    alert('hej');
-};
+var helo;
