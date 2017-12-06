@@ -3,8 +3,10 @@ var sass = require('gulp-sass');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var autoprefixer = require('gulp-autoprefixer');
+var browserify = require('gulp-browserify');
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
+var merge = require('merge-stream');
 
 var SRCPATHS = {
     sassSource : 'src/scss/*.scss',
@@ -14,7 +16,8 @@ var SRCPATHS = {
 var APPPATH = {
     root : 'app/',
     css : 'app/css',
-    js : 'app/js'
+    js : 'app/js',
+    fonts: 'app/fonts'
 }
 
 gulp.task('clean-html', function() {
@@ -27,16 +30,26 @@ gulp.task('clean-scripts', function() {
 });
 
 gulp.task('sass', function(){
-    return gulp.src(SRCPATHS.sassSource)
+    var bootstrapCSS = gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css');
+    var sassFiles;
+    
+    sassFiles = gulp.src(SRCPATHS.sassSource)
         .pipe(autoprefixer())
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(gulp.dest(APPPATH.css))
-        //important that the pipes are in the correct order
+        return merge(bootstrapCSS, sassFiles)
+            .pipe(concat('app.css'))
+            .pipe(gulp.dest(APPPATH.css));
+});
+
+gulp.task('moveFonts', function(){
+    gulp.src('./node_modules/bootstrap/fonts/*.{eot,svg,ttf,woff,woff2}')
+        .pipe(gulp.dest(APPPATH.fonts));
 });
 
 gulp.task('scripts', ['clean-scripts'], function() {
     gulp.src(SRCPATHS.jsSource)
         .pipe(concat('main.js'))
+        .pipe(browserify())
         .pipe(gulp.dest(APPPATH.js))
 });
 
@@ -53,7 +66,7 @@ gulp.task('serve', ['sass'], function() {
     })
 });
 
-gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts'], function() {
+gulp.task('watch', ['serve', 'sass', 'copy', 'clean-html', 'clean-scripts', 'scripts', 'moveFonts'], function() {
     gulp.watch([SRCPATHS.sassSource], ['sass']);
     gulp.watch([SRCPATHS.htmlSource], ['copy']);
     gulp.watch([SRCPATHS.jsSource], ['scripts']);
